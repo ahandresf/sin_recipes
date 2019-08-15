@@ -1,0 +1,42 @@
+# The name of the environment matching the repository name
+name: DeepSkyPlanner
+# I prefer conda-forge packages for my projects
+channels:
+- conda-forge
+- defaults
+# Start with Python and include everything you need
+dependencies:
+- python=3.7
+- gcc
+- pip
+- pytest
+- numpy
+- pandas
+- matplotlib
+- time
+- astropy
+- astroplan
+- jupyter
+- healpy
+- wget
+- Cython
+- h5py
+- scipy
+- psycopg2
+- geos
+- basemap
+#- tensorflow
+- keras
+- numexpr
+- tzlocal
+#- openmpi
+#- zlib
+#- cmake
+
+- pip:
+  - tensorflow==2.0.0-beta1
+  - cosmoHammer
+  - lenstronomy
+  - gym
+  - palpy
+  - wget
