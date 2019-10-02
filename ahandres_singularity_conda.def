@@ -1,0 +1,63 @@
+Bootstrap: library
+From: ubuntu:18.04
+Stage: build
+
+%setup
+
+%files
+    #environment.yml file that should be located in the repo, I try using $HOME instead of the path but it fail. 
+    /home/ahandresf/deepskies/DeepSkyPlanner/env_sky_planner.yml
+
+%post
+    echo "I am in the post"
+    #installing gcc for whatever is needed, e.g. Cython
+    apt-get update
+    apt-get install build-essential -y
+    apt-get install manpages-dev -y
+    apt-get install wget -y
+
+    #installing anaconda
+    wget https://repo.anaconda.com/archive/Anaconda3-2019.07-Linux-x86_64.sh
+    printf '\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nyes' | bash Anaconda3-2019.07-Linux-x86_64.sh
+    source ~/.bashrc
+
+    #making deepkies directories
+    mkdir $HOME/deepskies/
+    cd $HOME/deepskies/
+
+    #clone the DeepSkyPlanner repository
+    cd $HOME
+    git clone https://github.com/deepskies/DeepSkyPlanner.git
+
+    #create the environment
+    cd $HOME/deepskies/DeepSkyPlanner/
+    conda env create -f env_sky_planner.yml
+    #activate environment
+    conda activate DeepSkyPlanner
+
+    #this is the script that should run
+    #python /Users/ahandres/deepskies/DeepSkyPlanner/deepskyplanner/a2c_agent/A2CAgent.py
+    #python $HOME/deepskies/DeepSkyPlanner/deepskyplanner/a2c_agent/A2CAgent.py
+
+%test
+    grep -q NAME=\"Ubuntu\" /etc/os-release
+    if [ $? -eq 0 ]; then
+        echo "Container base is Ubuntu as expected."
+    else
+        echo "Container base is not Ubuntu."
+    fi
+    ls $HOME/deepskies/DeepSkyPlanner/deepskyplanner/a2c_agent/A2CAgent.py
+
+%environment
+
+%startscript
+
+%labels
+  Author ahandresf@gmail.com
+  version v0.0.1
+  Definition DeepSkyPlanner code for agents
+
+%help
+  This should build the right environment for running conda and all the dependencies
+  inside the singularity container. Python3, Conda, Pandas, Numpy, Cython, gcc.
+  Most of this packges should be define in the environment.yml file.
