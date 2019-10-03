@@ -8,6 +8,9 @@ Stage: build
     #environment.yml file that should be located in the repo, I try using $HOME instead of the path but it fail. 
     /home/ahandresf/deepskies/DeepSkyPlanner/env_sky_planner.yml
 
+%environment
+#PATH=/opt/conda/envs/$(head -1 env_sky_planner.yml | cut -d' ' -f2)/bin:$PATH #added
+
 %post
     echo "I am in the post"
     #installing gcc for whatever is needed, e.g. Cython
@@ -15,11 +18,15 @@ Stage: build
     apt-get install build-essential -y
     apt-get install manpages-dev -y
     apt-get install wget -y
+    apt-get install git -y
 
     #installing anaconda
     wget https://repo.anaconda.com/archive/Anaconda3-2019.07-Linux-x86_64.sh
-    printf '\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nyes' | bash Anaconda3-2019.07-Linux-x86_64.sh
-    source ~/.bashrc
+    #Anaconda3 will now be installed into this location: /root/anaconda3
+    printf '\nyes\nyes' | bash Anaconda3-2019.07-Linux-x86_64.sh
+    #conda init
+    source ~/.bashrc 
+    conda init
 
     #making deepkies directories
     mkdir $HOME/deepskies/
@@ -35,6 +42,11 @@ Stage: build
     #activate environment
     conda activate DeepSkyPlanner
 
+    #copy from other script lets see 
+    #echo ". /opt/conda/etc/profile.d/conda.sh" >> ~/.bashrc
+    #echo "source activate $(head -1 env_sky_planner.yml | cut -d' ' -f2)" > ~/.bashrc
+    #/opt/conda/bin/conda env create -f env_sky_planner.yml
+
     #this is the script that should run
     #python /Users/ahandres/deepskies/DeepSkyPlanner/deepskyplanner/a2c_agent/A2CAgent.py
     #python $HOME/deepskies/DeepSkyPlanner/deepskyplanner/a2c_agent/A2CAgent.py
@@ -47,8 +59,6 @@ Stage: build
         echo "Container base is not Ubuntu."
     fi
     ls $HOME/deepskies/DeepSkyPlanner/deepskyplanner/a2c_agent/A2CAgent.py
-
-%environment
 
 %startscript
 
